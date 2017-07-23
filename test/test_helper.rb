@@ -12,6 +12,40 @@ query_hash = {user: [:name]}
 query_hash = {name: []}
 
 module Gql
+
+  class Visitor < GraphQL::Parser::Visitor
+    attr_accessor :nodes, :field_exp, :field_tree
+
+    def initialize
+      @nodes = []
+      @field_tree = []
+    end
+
+    def visit_document(*args)
+      puts args
+    end
+
+    def visit_operation_definition(*args)
+      puts args
+    end
+
+    def visit_field(field)
+      fe = FieldExp.new(field.name.value, @field_tree.last)
+      @field_tree.last.children << fe if @field_tree.last
+      @field_tree.push FieldExp.new(field.name.value)
+    end
+
+    def end_visit_field(field)
+      if @field_tree.size > 1
+        @field_tree.pop
+      end
+    end
+
+    def method_missing(name, node)
+      @nodes << name
+    end
+  end
+
   require 'logger'
   module Logger
 
@@ -31,8 +65,9 @@ module Gql
     attr_accessor :_name, :parent, :opts, :results, :subject, :subjects, :gql_type
     attr_reader :children
 
-    def initialize(name, opts=nil, parent=nil)
-      @_name, @opts, @parent, @results = name, opts, parent
+    def initialize(name, parent=nil, opts=nil)
+      @_name, @opts, @parent = name, opts, parent
+      @children = []
       infer_gql_type
     end
 
