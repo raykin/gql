@@ -1,13 +1,12 @@
 module Gql
   class FieldExp
 
-    attr_accessor :_name, :parent, :opts, :results, :subject, :subjects, :gql_type
+    attr_accessor :_name, :parent, :opts, :results, :subject, :subjects, :gql_type, :parent_gql_type
     attr_reader :children
 
     def initialize(name, parent=nil, opts=nil)
       @_name, @opts, @parent = name, opts, parent
       @children = []
-      infer_gql_type
     end
 
     def infer_gql_type
@@ -28,7 +27,7 @@ module Gql
     end
 
     def find_gql_type
-      # Not Implemented
+      Schema.find_type parent_gql_type.field_key(@_name)
     end
 
     def root?
@@ -38,15 +37,16 @@ module Gql
     # Not sure if it's a good method to use merge! to build results recursively.
     # What I concern is if it will be tricky for debug
     def cal
+      infer_gql_type
       Logger.debug '*'*20, _name, gql_type.inspect
       if gql_type.scalar
         results.merge! _name => infer_value
       elsif gql_type.list
         results.merge! _name => []
-        children.each {|f| f.subjects = infer_value}
+        children.each {|f| f.subjects = infer_value; f.parent_gql_type = gql_type}
       elsif gql_type.object
         results.merge! _name => {}
-        children.each {|f| f.subject = infer_value}
+        children.each {|f| f.subject = infer_value; f.parent_gql_type = gql_type}
       end
       Logger.debug '+'*20, results
       if children

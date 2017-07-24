@@ -6,6 +6,7 @@ require 'graphql/parser'
 
 require 'gql/field_exp'
 require 'gql/base_type'
+require 'gql/schema'
 
 module Gql
 

@@ -10,9 +10,17 @@ module Gql
     def list; false end
     def object; false end
 
-    def cal
+    def self.field_key(field_name)
+      "#{object_id} field_name"
+    end
 
-      root_query_class
+    # TODO: how to test it, it always dynamic
+    def self.add_type(field_name, type_klass)
+      Schema.insert_type(field_key(field_name), type_klass)
+    end
+
+    def field_key(field_name)
+      self.class.field_key(field_name)
     end
   end
 

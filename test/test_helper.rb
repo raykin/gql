@@ -6,11 +6,6 @@ require "minitest/autorun"
 
 # Move to support.rb or sub dir when required
 
-# Don't consider it is just a hash.
-# Finally it will becomes an object with delegate data to hash
-query_hash = {user: [:name]}
-query_hash = {name: []}
-
 module Gql
 
   class Visitor < GraphQL::Parser::Visitor
@@ -88,6 +83,7 @@ module Gql
       field_exps.each do |f|
         f.results = results[:data]
         f.subject = gtype.new
+        f.parent_gql_type = gtype.new
       end.each(&:cal)
       @results
     end
@@ -102,8 +98,14 @@ module Gql
 
 end
 
+class UserType < Gql::ObjectType
+
+end
+
+
 # Application Code
 class QueryType < Gql::RootType
+  add_type :hero, UserType
 
   def user
     User.new()
@@ -118,10 +120,6 @@ class QueryType < Gql::RootType
   end
 end
 
-
-class UserType < Gql::ObjectType
-
-end
 
 class User
   attr_accessor :name, :sex, :profile
