@@ -7,9 +7,9 @@ class GqlTest < Minitest::Test
   end
 
   def test_user_query
-    query = Gql::QueryFieldExp.new()
+    query = Gql::QueryOperation.new
     user = Gql::FieldExp.new('user')
-    query.children = [user]
+    query.field_exps.push user
 
     fullname = Gql::FieldExp.new('name')
     sex = Gql::FieldExp.new('sex')

@@ -14,19 +14,28 @@ query_hash = {name: []}
 module Gql
 
   class Visitor < GraphQL::Parser::Visitor
-    attr_accessor :nodes, :field_exp, :field_tree
+    attr_accessor :nodes, :field_exp, :field_tree, :operation
 
     def initialize
       @nodes = []
       @field_tree = []
     end
 
-    def visit_document(*args)
-      puts args
+    # doc.definitions_size
+    def visit_document(doc)
     end
 
-    def visit_operation_definition(*args)
-      puts args
+    # available methods in odef
+    # [:directives_size, :name, :operation, :selection_set, :variable_definitions_size]
+    def visit_operation_definition(odef)
+      @operation = case odef.operation
+      when 'query'
+        QueryOperation.new
+      when 'mutation'
+        MutationOperation.new
+      else
+        raise 'Unsupport operation yet'
+      end
     end
 
     def visit_field(field)
@@ -41,57 +50,55 @@ module Gql
       end
     end
 
+    def end_visit_operation_definition(odef)
+      @operation.field_exps = @field_tree
+    end
+
     def method_missing(name, node)
       @nodes << name
     end
   end
 
-  require 'logger'
-  module Logger
 
-    class << self
-      attr_accessor :logger
-    end
-
-    def self.debug(*msg)
-      @logger ||= ::Logger.new(STDOUT)
-      @logger.debug(msg)
-    end
-
-  end
-
-  class Document
-
-  end
-
-  class RootFieldExp < FieldExp
-    def root?; true end
-  end
-
-  class QueryFieldExp < RootFieldExp
-
+  class Operation
+    attr_accessor :_name, :field_exps, :results, :gtype
     def initialize
-      @_name, @results = 'Query', {}
+      @results, @field_exps = {data: {}}, []
       infer_gql_type
     end
 
+    def infer_gql_type
+      @gtype ||= "#{_name.camelize}Type".safe_constantize
+      if @gtype.nil?
+        raise "No GraphqlType find for #{self.class.name}"
+      end
+    end
+
+  end
+
+  class QueryOperation < Operation
+
+    def initialize
+      @_name = 'query'
+      super
+    end
+
     def cal
-      @results[:data] = {}
-      Logger.debug(_name, results)
-      children.each do |f|
+      Logger.debug(_name, results, gtype)
+      field_exps.each do |f|
         f.results = results[:data]
-        f.subject = gql_type
+        f.subject = gtype.new
       end.each(&:cal)
       @results
     end
   end
 
-  class MutationFieldExp < FieldExp
-    def root?
-      true
+  class MutationOperation < Operation
+    def initialize
+      @_name = 'mutation'
+      super
     end
   end
-
 
 end
 
@@ -104,6 +111,10 @@ class QueryType < Gql::RootType
 
   def users
     [User.new(), User.new('sura', 'woman')]
+  end
+
+  def hero
+    User.new('aka', 'man')
   end
 end
 
