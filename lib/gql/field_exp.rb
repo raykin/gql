@@ -43,14 +43,29 @@ module Gql
         results.merge! _name => infer_value
       elsif gql_type.list
         results.merge! _name => []
+        # How to make it work for ListType
+        subjects.each do ||
+
+        end
         children.each {|f| f.subjects = infer_value; f.parent_gql_type = gql_type}
       elsif gql_type.object
-        results.merge! _name => {}
-        children.each {|f| f.subject = infer_value; f.parent_gql_type = gql_type}
+        cal_object
       end
-      Logger.debug '+'*20, results
+    end
+
+    private
+    def cal_list
+
+    end
+
+    def cal_object
+      results.merge! _name => {}
       if children
-        children.each { |f| f.results = results[_name] }.each(&:cal)
+        children.each do |child|
+          child.subject = infer_value
+          child.parent_gql_type = gql_type
+          child.results = results[_name]
+        end.each(&:cal)
       end
     end
   end
