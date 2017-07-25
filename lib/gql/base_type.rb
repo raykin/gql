@@ -11,7 +11,7 @@ module Gql
     def object; false end
 
     def self.field_key(field_name)
-      "#{object_id} field_name"
+      "#{object_id} #{field_name}"
     end
 
     # TODO: how to test it, it always dynamic

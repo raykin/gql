@@ -14,4 +14,12 @@ class ParserTest < Minitest::Test
     assert_equal({:data=>{"hero"=>{"name"=>"aka", "sex"=>"man"}}}, operation.cal)
   end
 
+  def test_ast_1
+    ast = GraphQL::Parser.parse('{ hero { name } liliya }')
+    visitor = Gql::Visitor.new
+    visitor.accept(ast)
+    operation = visitor.operation
+    assert_equal 2, operation.field_exps.size
+    assert_equal({:data=>{"hero"=>{"name"=>"aka"}, "liliya" => "lili"}}, operation.cal)
+  end
 end

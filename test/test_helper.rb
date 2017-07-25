@@ -42,11 +42,14 @@ module Gql
     def end_visit_field(field)
       if @field_tree.size > 1
         @field_tree.pop
+      elsif @field_tree.size == 1
+        @operation.field_exps.push(@field_tree.first)
+        @field_tree.pop
       end
     end
 
     def end_visit_operation_definition(odef)
-      @operation.field_exps = @field_tree
+      # Do nothing
     end
 
     def method_missing(name, node)
@@ -117,6 +120,10 @@ class QueryType < Gql::RootType
 
   def hero
     User.new('aka', 'man')
+  end
+
+  def liliya
+    'lili'
   end
 end
 
