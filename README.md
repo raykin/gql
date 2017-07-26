@@ -1,14 +1,49 @@
 # Gql
 
+Class-Method way to serve grahql server in ruby.
+
 In Development!
 
+## Difference from graphql-ruby
 
-## Installation
+Class-Method style coding compare to block code in graphql-ruby
+
+Use obvious convention to code less and bug less. But only obvious convention was used to reduce surprise.
+
+## Examples
+
+In {hero {name age}}
+
+the ruby server code can be
+
+```ruby
+class QueryType < Gql::ObjectType
+  def hero
+    User.new
+  end
+end
+
+class Hero
+  attr_accessor :name, :age
+  def initialize(name='foo', age='unknown')
+    @name, @age = name, age
+  end
+end
+
+```
+
+The result will be
+
+```ruby
+  {data: {hero: {name: 'foo', age: 'unknown'}}}
+```
+
+## Installation (Not released yet, do not try following)
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'gql'
+gem 'gql-not-released-yet'
 ```
 
 And then execute:
@@ -17,7 +52,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install gql
+    $ gem install gql-not-released-yet
 
 ## Usage
 
