@@ -18,11 +18,16 @@ class GqlTest < Minitest::Test
     assert_equal({:data=>{"user"=>{"name"=>"raykin", "sex"=>"man"}}}, query.cal)
   end
 
-  # def test_name_query
-  #   query_hash = {name: nil}
-  #   assert_equal Qql::Query.new.resolve(query_hash), 'meaningful'
+  def test_users_query
+    query = Gql::QueryOperation.new
+    users = Gql::FieldExp.new('users')
 
-  # end
+    query.field_exps.push users
+    query.cal
+    puts users.gql_type
+    assert users.gql_type.is_a?(Gql::ListType)
+    assert_equal({:data => {"users" => []}}, query.cal)
+  end
 
   # def test_that_it_has_a_version_number
   #   refute_nil ::Gql::VERSION

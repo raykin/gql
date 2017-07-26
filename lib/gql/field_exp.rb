@@ -9,9 +9,6 @@ module Gql
       @children = []
     end
 
-    def infer_gql_type
-      @gql_type ||= ("#{_name.camelize}Type".safe_constantize || find_gql_type || StringType).new
-    end
 
     def infer_value
       @infer_value ||= if subject
@@ -24,6 +21,19 @@ module Gql
     def children=(fields)
       @children = fields
       fields.each {|f| f.parent = self}
+    end
+
+    def infer_gql_type
+      @gql_type ||= infer_gql_type_by_name || (find_gql_type || StringType).new
+    end
+
+    def infer_gql_type_by_name
+      if _name.plural?
+        gql_type_klass = "#{_name.singularize.camelize}Type".safe_constantize
+        gql_type_klass ? ListType.new(gql_type_klass) : nil
+      else
+        "#{_name.camelize}Type".safe_constantize.try(:new)
+      end
     end
 
     def find_gql_type
@@ -44,7 +54,7 @@ module Gql
       elsif gql_type.list
         results.merge! _name => []
         # How to make it work for ListType
-        subjects.each do ||
+        subjects.each do |value|
 
         end
         children.each {|f| f.subjects = infer_value; f.parent_gql_type = gql_type}

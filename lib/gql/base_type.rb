@@ -1,11 +1,6 @@
 module Gql
   class BaseType
 
-    attr_accessor :fields, :subjects, :results
-    def initializes
-      @results = {data: {}}
-    end
-
     def scalar; false end
     def list; false end
     def object; false end
@@ -34,6 +29,16 @@ module Gql
 
   end
 
+  class ListType < BaseType
+    attr_accessor :item_type
+    def initialize(item_type)
+      @item_type = item_type
+    end
+
+    def list; true end
+  end
+
+  # TODO: it is possible to make it as singleton
   class StringType < ScalarType
 
   end

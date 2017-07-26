@@ -4,6 +4,7 @@ require 'logger'
 
 require 'graphql/parser'
 
+require 'gql/core_ext'
 require 'gql/field_exp'
 require 'gql/base_type'
 require 'gql/schema'
