@@ -1,7 +1,7 @@
 module Gql
   class FieldExp
 
-    attr_accessor :_name, :parent, :opts, :results, :subject, :subjects, :gql_type, :parent_gql_type
+    attr_accessor :_name, :parent, :opts, :results, :subject, :subjects, :gql_type, :parent_gql_type, :infer_value
     attr_reader :children
 
     def initialize(name, parent=nil, opts=nil)
@@ -9,13 +9,12 @@ module Gql
       @children = []
     end
 
-
     def infer_value
       @infer_value ||= if subject
-        subject.send _name
-      else
-        subjects.map {|s| s.send _name}
-      end
+                         subject.send _name
+                       else
+                         subjects.map {|s| s.send _name}
+                       end
     end
 
     def children=(fields)
@@ -52,20 +51,27 @@ module Gql
       if gql_type.scalar
         results.merge! _name => infer_value
       elsif gql_type.list
-        results.merge! _name => []
-        # How to make it work for ListType
-        subjects.each do |value|
-
-        end
-        children.each {|f| f.subjects = infer_value; f.parent_gql_type = gql_type}
+        cal_list
       elsif gql_type.object
         cal_object
       end
     end
 
     private
-    def cal_list
 
+    #TODO: give different concept a proper name is important. Need read more of graphql spec
+    def cal_list
+      list_result = infer_value.map do |sub|
+        sub_hash = {}
+        children.each do |child|
+          child.infer_value = nil
+          child.subject = sub
+          child.parent_gql_type = gql_type
+          child.results = sub_hash
+        end.each(&:cal)
+        sub_hash
+      end
+      results.merge! _name => list_result
     end
 
     def cal_object

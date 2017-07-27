@@ -12,7 +12,7 @@ Use obvious convention to code less and bug less. But only obvious convention wa
 
 ## Examples
 
-In {hero {name age}}
+For { hero {name age} }
 
 the ruby server code can be
 
