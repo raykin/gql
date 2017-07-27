@@ -8,6 +8,8 @@ require 'gql/core_ext'
 require 'gql/field_exp'
 require 'gql/base_type'
 require 'gql/schema'
+require 'gql/visitor'
+require 'gql/operation'
 
 module Gql
 
