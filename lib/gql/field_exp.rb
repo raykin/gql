@@ -12,8 +12,10 @@ module Gql
     def infer_value
       @infer_value ||= if subject
                          subject.send _name
-                       else
+                       elsif subjects
                          subjects.map {|s| s.send _name}
+                       else
+                         nil
                        end
     end
 
@@ -48,6 +50,10 @@ module Gql
     def cal
       infer_gql_type
       Logger.debug '*'*20, _name, gql_type.inspect
+      if infer_value.nil?
+        results.merge! _name => infer_value
+        return
+      end
       if gql_type.scalar
         results.merge! _name => infer_value
       elsif gql_type.list
@@ -78,6 +84,7 @@ module Gql
       results.merge! _name => {}
       if children
         children.each do |child|
+          child.infer_value = nil
           child.subject = infer_value
           child.parent_gql_type = gql_type
           child.results = results[_name]
