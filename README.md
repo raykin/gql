@@ -71,3 +71,13 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/raykin
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
+## TODO
+
+Read Graphql Specific
+
+Ar::Type
+
+Input Parameters
+
+Introspection
