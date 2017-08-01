@@ -22,4 +22,10 @@ class ParserTest < Minitest::Test
     assert_equal 2, operation.field_exps.size
     assert_equal({:data=>{"hero"=>{"name"=>"aka"}, "liliya" => "lili"}}, operation.cal)
   end
+
+  def test_ast_with_opts
+    operation = Gql::Parser.operation('{ hero(name: "Lee", age: 24) { name } liliya }')
+    fe = operation.field_exps.first
+    fe
+  end
 end

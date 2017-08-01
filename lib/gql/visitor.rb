@@ -30,6 +30,23 @@ module Gql
       @field_tree.push FieldExp.new(field.name.value)
     end
 
+    def visit_argument(arg)
+      field = @field_tree.last
+      key = arg.name.value
+      # TODO crashed in C trace
+      # value = arg.value.value
+
+    end
+
+    # TODO Need doc
+    def visit_string_value(arg)
+      field = @field_tree
+    end
+
+    # TODO
+    def visit_int_value(arg)
+    end
+
     def end_visit_field(field)
       if @field_tree.size > 1
         @field_tree.pop
@@ -40,6 +57,7 @@ module Gql
     end
 
     def end_visit_operation_definition(odef)
+      # puts @nodes
       # Do nothing
     end
 
