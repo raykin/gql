@@ -8,6 +8,7 @@ require 'gql/core_ext'
 require 'gql/field_exp'
 require 'gql/base_type'
 require 'gql/schema'
+require 'gql/parser'
 require 'gql/visitor'
 require 'gql/operation'
 
@@ -26,4 +27,11 @@ module Gql
 
   end
 
+  def self.process(str)
+    ast = GraphQL::Parser.parse(str)
+    visitor = Gql::Visitor.new
+    visitor.accept(ast)
+    operation = visitor.operation
+    operation.cal
+  end
 end
