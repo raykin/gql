@@ -34,16 +34,13 @@ module Gql
       field = @field_tree.last
       key = arg.name.value
       # TODO crashed in C trace
-      # value = arg.value.value
-
+      value_obj = arg.value
     end
 
-    # TODO Need doc
     def visit_string_value(arg)
       field = @field_tree
     end
 
-    # TODO
     def visit_int_value(arg)
     end
 

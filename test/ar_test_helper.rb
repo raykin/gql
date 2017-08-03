@@ -53,7 +53,7 @@ end
 class QuestionType < Gql::ArType
 end
 
-class QueryType < Gql::RootType
+class QueryType < Gql::ObjectType
   def blog
     Blog.first
   end

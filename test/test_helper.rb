@@ -13,7 +13,7 @@ class UserType < Gql::ObjectType
 end
 
 # Application Code
-class QueryType < Gql::RootType
+class QueryType < Gql::ObjectType
   add_type :hero, UserType
 
   def user
@@ -30,6 +30,11 @@ class QueryType < Gql::RootType
 
   def liliya
     'lili'
+  end
+
+  private
+  def should_not_record
+    'private method should not record in fields'
   end
 end
 
