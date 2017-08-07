@@ -2,7 +2,8 @@ require "gql/version"
 require 'active_support/core_ext/string'
 require 'logger'
 
-require 'graphql/parser'
+require 'gql/libgraphqlparser/builder'
+require  'gql_ext'
 
 require 'gql/core_ext'
 require 'gql/field_exp'
@@ -11,6 +12,7 @@ require 'gql/schema'
 require 'gql/parser'
 require 'gql/visitor'
 require 'gql/operation'
+
 
 module Gql
 

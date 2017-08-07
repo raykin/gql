@@ -14,6 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/raykin/gql"
   spec.license       = "MIT"
 
+  spec.extensions    = ['ext/gql_ext/extconf.rb']
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
@@ -29,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
   spec.add_development_dependency "activerecord", "> 4.0"
   spec.add_development_dependency "sqlite3"
+  spec.add_development_dependency 'rake-compiler', '~> 0.9'
 end

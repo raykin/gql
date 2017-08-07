@@ -1,6 +1,6 @@
 # Gql
 
-Class-Method way to serve grahql server in ruby.
+Class-Method way to build grahql server in ruby.
 
 In Development!
 

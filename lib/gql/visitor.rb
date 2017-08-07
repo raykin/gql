@@ -1,5 +1,7 @@
+# Deprecated
 module Gql
-  class Visitor < GraphQL::Parser::Visitor
+  # Because GraphQL::Parser was removed
+  class Visitor # < GraphQL::Parser::Visitor
     attr_accessor :nodes, :field_exp, :field_tree, :operation
 
     def initialize
